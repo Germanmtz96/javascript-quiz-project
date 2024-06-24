@@ -26,8 +26,8 @@ class Quiz {
      }
 
      checkAnswer(answer){
-        if (this.questions[this.currentQuestionIndex] === true){
-           return this.correctAnswers++
+        if(answer === this.questions[this.currentQuestionIndex].answer){
+            return this.correctAnswers++;
         }
      }
 
@@ -37,5 +37,13 @@ class Quiz {
         }else{
             return true
         }
+     }
+
+     filterQuestionByDifficulty(){
+
+     }
+
+     averageDifficulty(){
+
      }
 }
