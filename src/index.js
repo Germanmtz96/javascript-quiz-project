@@ -89,6 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Get the current question from the quiz by calling the Quiz class method `getQuestion()`
     const question = quiz.getQuestion();
+    console.log(question)
+    console.log(quiz)
     // Shuffle the choices of the current question by calling the method 'shuffleChoices()' on the question object
     question.shuffleChoices();
     
@@ -98,22 +100,40 @@ document.addEventListener("DOMContentLoaded", () => {
     //
     // 1. Show the question
     // Update the inner text of the question container element and show the question text
-
+    questionContainer.innerText = question.text
+    // choiceContainer.innerHTML = question.shuffleChoices()
     
     // 2. Update the green progress bar
     // Update the green progress bar (div#progressBar) width so that it shows the percentage of questions answered
     
-    progressBar.style.width = `65%`; // This value is hardcoded as a placeholder
+    /* console.log(quiz.questions.length)
+    console.log(quiz.currentQuestionIndex) */
+    const porcentaje = ((quiz.currentQuestionIndex) * 100) / quiz.questions.length
+    
+    progressBar.style.width = `${porcentaje}%`; // This value is hardcoded as a placeholder
 
 
 
     // 3. Update the question count text 
     // Update the question count (div#questionCount) show the current question out of total questions
     
-    questionCount.innerText = `Question 1 of 10`; //  This value is hardcoded as a placeholder
-
-
+    questionCount.innerText = `Question ${quiz.currentQuestionIndex+1} of ${quiz.questions.length}`; //  This value is hardcoded as a placeholder
+    question.choices.forEach(element => {
+      const inputRadio = document.createElement("div")
+    inputRadio.innerHTML = `<input type="radio" name="choice" class= "option" value="${element}">
+          <label>${element}</label>
+        <br>`
+        choiceContainer.appendChild(inputRadio)
+    });
     
+    /* const inputRadio = document.createElement("div")
+    inputRadio.innerHTML = `<input type="radio" name="choice" value="${question.choices[0]}">
+          <label>${question.choices[0]}</label>
+        <br>`
+        choiceContainer.appendChild(inputRadio)
+       */
+        
+ 
     // 4. Create and display new radio input element with a label for each choice.
     // Loop through the current question `choices`.
       // For each choice create a new radio input with a label, and append it to the choice container.
@@ -136,32 +156,48 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedAnswer; // A variable to store the selected answer value
 
 
-
+    
     // YOUR CODE HERE:
     //
     // 1. Get all the choice elements. You can use the `document.querySelectorAll()` method.
-
+    const allChoices = document.querySelectorAll(".option")
+    
+  
 
     // 2. Loop through all the choice elements and check which one is selected
       // Hint: Radio input elements have a property `.checked` (e.g., `element.checked`).
       //  When a radio input gets selected the `.checked` property will be set to true.
       //  You can use check which choice was selected by checking if the `.checked` property is true.
-
+      allChoices.forEach(element=> {
+      if(element.checked === true){
+        selectedAnswer = element.value
+      }
+    })
       
     // 3. If an answer is selected (`selectedAnswer`), check if it is correct and move to the next question
       // Check if selected answer is correct by calling the quiz method `checkAnswer()` with the selected answer.
       // Move to the next question by calling the quiz method `moveToNextQuestion()`.
       // Show the next question by calling the function `showQuestion()`.
+    quiz.checkAnswer(selectedAnswer)
+    
+    quiz.moveToNextQuestion() 
+
+    showQuestion()
   }  
-
-
+  
+ 
 
 
   function showResults() {
 
     // YOUR CODE HERE:
-    //
+/*     document.querySelector(quizView).remove()
+
+    document.querySelector(endView) */
     // 1. Hide the quiz view (div#quizView)
+    if(quiz.currentQuestionIndex.length){
+      
+    }
     quizView.style.display = "none";
 
     // 2. Show the end view (div#endView)
