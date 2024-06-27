@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const questionContainer = document.querySelector("#question");
   const choiceContainer = document.querySelector("#choices");
   const nextButton = document.querySelector("#nextButton");
+  const restartQuizBtn = document.querySelector("#restartButton")
 
   // End view elements
   const resultContainer = document.querySelector("#result");
@@ -26,11 +27,17 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Array with the quiz questions
   const questions = [
-    new Question("What is 2 + 2?", ["3", "4", "5", "6"], "4", 1),
-    new Question("What is the capital of France?", ["Miami", "Paris", "Oslo", "Rome"], "Paris", 1),
-    new Question("Who created JavaScript?", ["Plato", "Brendan Eich", "Lea Verou", "Bill Gates"], "Brendan Eich", 2),
-    new Question("What is the mass–energy equivalence equation?", ["E = mc^2", "E = m*c^2", "E = m*c^3", "E = m*c"], "E = mc^2", 3),
     // Add more questions here
+    new Question("¿En qué película de Disney aparece el personaje de Simba?🦁",["Aladdin","La Bella y la Bestia","El Rey León","La Sirenita"],"El Rey León",1),
+    new Question(`¿Cuál es el nombre de la sirena protagonista de "La Sirenita"?🧜‍♀️`,["Bella", "Ariel","Jasmine","Elsa"],"Ariel",1),
+    new Question("¿Qué objeto pierde Cenicienta en el baile?👸🏼",["Un collar", "Una tiara", "Un zapato de cristal", "Un abanico"],"Un zapato de cristal",1),
+    new Question(`¿Cuál es el nombre del juguete vaquero en "Toy Story"?🤠`,["Buzz Lightyear","Woody","Jessie","Rex"],"Woody",2),
+    new Question(`En "Aladdin", ¿cómo se llama el villano principal?🧞‍♂️`,["Scar","Hades","Jafar","Gastón"],"Jafar",2),
+    new Question(`¿Qué tipo de animal es Baloo en "El libro de la selva"?🐒`,["Un tigre","Un lobo","Un oso","Un mono"],"Un oso",2),
+    new Question(`¿Cuál es el nombre del dragón en "Mulán"?🐉`,["Mushu","Shere Khan","Smaug","Elliot"],"Mushu",3),
+    new Question(`¿Cómo se llama la ciudad donde viven los protagonistas de "Zootopia"?🦊`,["Zootrópolis","Animápolis","Bestiópolis","Metropolis"],"Zootrópolis",3),
+    new Question(`¿Qué tipo de pez es Dory en "Buscando a Nemo"?🐠`,["Pez payaso","Pez cirujano azul","Pez globo","Pez ángel"],"Pez cirujano azul",3),
+    new Question(`En "Frozen", ¿cómo se llama el reino donde viven Elsa y Anna?❄️`,["Arendelle","Corona","Atlantica","Andalasia"],"Arendelle",3),
   ];
   const quizDuration = 120; // 120 seconds (2 minutes)
 
@@ -46,27 +53,60 @@ document.addEventListener("DOMContentLoaded", () => {
   /************  SHOW INITIAL CONTENT  ************/
 
   // Convert the time remaining in seconds to minutes and seconds, and pad the numbers with zeros if needed
-  const minutes = Math.floor(quiz.timeRemaining / 60).toString().padStart(2, "0");
-  const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
-
-  // Display the time remaining in the time remaining container
-  const timeRemainingContainer = document.getElementById("timeRemaining");
-  timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+  
 
   // Show first question
   showQuestion();
+  
 
 
   /************  TIMER  ************/
-
   let timer;
+  
+  function updateTimer(){
+    const minutes = Math.floor(quiz.timeRemaining / 60).toString().padStart(2, "0");
+      const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+    
+      // Display the time remaining in the time remaining container
+      const timeRemainingContainer = document.getElementById("timeRemaining");
+      timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+  }
 
+function timerFunction(){
+  timer = setInterval(() =>{
+    quiz.timeRemaining--
+
+    updateTimer();
+
+    if(quiz.timeRemaining === 0){
+      clearInterval(timer);
+      showResults();
+    }
+    
+  }, 1000);
+}
+
+  
+timerFunction();
 
   /************  EVENT LISTENERS  ************/
 
   nextButton.addEventListener("click", nextButtonHandler);
 
+  restartQuizBtn.addEventListener("click", () => {
+    quiz.currentQuestionIndex = 0;
+    quiz.correctAnswers = 0;
+    quizView.style.display = "flex";
+    endView.style.display = "none";
+    quiz.shuffleQuestions();
+    showQuestion();
+    quiz.timeLimit = 120;
+    quiz.timeRemaining = 120;
+    timerFunction();
+    updateTimer();
+  })
 
+ 
 
   /************  FUNCTIONS  ************/
 
@@ -204,7 +244,10 @@ document.addEventListener("DOMContentLoaded", () => {
     endView.style.display = "flex";
     
     // 3. Update the result container (div#result) inner text to show the number of correct answers out of total questions
-    resultContainer.innerText = `You scored 1 out of 1 correct answers!`; // This value is hardcoded as a placeholder
+    resultContainer.innerText = `Has acertado ${quiz.correctAnswers} de ${quiz.questions.length} respuestas correctas!`; // This value is hardcoded as a placeholder
+
+    clearInterval(timer);
   }
   
 });
+
